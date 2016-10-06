@@ -1,0 +1,17 @@
+{% load static %}
+<html lang="es">
+<head>
+	<title>Imprimir: {% block title %}{{ headline }} | {{ BRAND_SHORT }}{% endblock title %}</title>
+</head>
+<body>
+	{% block content %}
+	{% endblock content %}
+	<script type="text/javascript" src="{% static 'scripts/jquery.js' %}"></script>
+	<script type="text/javascript">
+		$(function(){
+			print();
+			close();
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+{% extends "base_backend.html" %}
+{% load money %}
+
+{% block content %}
+<style>
+    .actions { opacity: 0; transition: all .2s ease; }
+    tr:hover .actions { opacity: 1; }
+</style>
+<div class="page-header">
+    <h2>
+        {{ headline }}
+        <a class="btn btn-default pull-right" href="{{ print_link }}" target="_blank" style="margin-left:.5em"><i class="fa fa-print"></i></a>
+        <a class="btn btn-success pull-right" href="{% url 'record_create' %}?volver={{ request.get_full_path|urlencode }}">Nuevo registro</a>
+    </h2>
+    <div class="pull-left">
+        <a href="{% url 'record_list' %}">Todos</a> |
+        <a href="{% url 'pending_record_list' %}">Pendientes</a> |
+        <a href="{% url 'confirmed_record_list' %}">Confirmados</a> |
+        <a href="{% url 'cancelled_record_list' %}">Cancelados</a>
+        {% if request.GET.q %}
+        | <a href="{{ request.path }}">Borrar todos los filtros</a>
+        {% endif %}
+    </div>
+    <div class="row">
+        <form id="filter" class="col-md-4 pull-right">
+            <input type="text" class="form-control" name="q" value="{{ request.GET.q }}" placeholder="Buscar registros" />
+            <input type="hidden" name="p" />
+        </form>
+    </div>
+</div>
+<table class="table table-hover table-striped">
+    <thead>
+        <tr>
+            <th class="col-md-1">Registro</th>
+            <th class="col-md-7">Detalles</th>
+            <th class="col-md-3">Tipo / Estado</th>
+            <th class="col-md-1">
+                Importe
+                <button type="button" class="btn btn-xs btn-default pull-right" data-toggle="popover" title="Saldo total" data-content="{{ total|money }}" data-placement="bottom" data-trigger="focus">
+                    <i class="fa fa-dollar"></i>
+                </button>
+            </th>
+            <th class=""></th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for record in object_list %}
+        <tr id="{{ record.html_id }}">
+            <td>
+                {{ record.yuid }}<br/>
+                <small>{{ record.date|date:"d/m/y" }}</small><br/>
+                {% if record.plan != record.date.year %}<small class="text-danger"><b>P-{{ record.plan }}</b></small>{% endif %}
+            </td>
+            <td>
+                {{ record.destination }}<br/>
+                <small>{{ record.destination.area.name }}</small><br/>
+                <small class="text-muted">{{ record.description|default:"No se especificaron más detalles" }}</small>
+            </td>
+            <td>
+                {{ record.concept.name }}<br/>
+                <small>{{ record.get_status_display }}</small><br/>
+                {% if record.is_pending %}
+                <small class="actions">
+                    <a href="{% url 'record_update' record.date.year record.yuid %}?volver={{ request.get_full_path|add:'#'|add:record.html_id|urlencode }}">Editar</a>
+                    <a href="{% url 'record_confirm' record.date.year record.yuid %}?volver={{ request.get_full_path|add:'#'|add:record.html_id|urlencode }}">Confirmar</a>
+                    <a href="{% url 'record_cancel' record.date.year record.yuid %}?volver={{ request.get_full_path|add:'#'|add:record.html_id|urlencode }}">Cancelar</a>
+                    {# <a href="{% url 'record_delete' record.date.year record.yuid %}?volver={{ request.get_full_path|add:'#'|add:record.html_id|urlencode }}">Eliminar</a> #}
+                </small>
+                {% endif %}
+            </td>
+            <td class="text-right" style="padding-right:1.5em">
+                {{ record.amount }}
+            </td>
+            <td class="{% if record.is_cancelled %}danger{% elif record.is_confirmed %}success{% elif record.is_pending %}warning{% endif %}">
+                <i class="fa fa-{% if record.is_cancelled %}times{% elif record.is_confirmed %}check{% elif record.is_pending %}question{% endif %}-circle text-{% if record.is_cancelled %}danger{% elif record.is_confirmed %}success{% elif record.is_pending %}warning{% endif %}"></i>
+            </td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="5">No hay registros para mostrar.</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% include "snippets/_pager.html" %}
+{% endblock content %}

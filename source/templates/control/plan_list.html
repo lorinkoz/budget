@@ -1,0 +1,60 @@
+{% extends "base_backend.html" %}
+
+{% block content %}
+<style>
+    .actions { opacity: 0; transition: all .2s ease; }
+    tr:hover .actions { opacity: 1; }
+</style>
+<div class="page-header">
+    <h2>
+        {{ headline }}
+        <a class="btn btn-success pull-right" href="{% url 'plan_create' %}?volver={{ request.get_full_path|urlencode }}">Nuevo plan</a>
+    </h2>
+    <div class="pull-left">
+        {% if request.GET.q %}
+        <a href="{{ request.path }}">Borrar todos los filtros</a>
+        {% endif %}
+    </div>
+    <div class="row">
+        <form id="filter" class="col-md-4 pull-right">
+            <input type="text" class="form-control" name="q" value="{{ request.GET.q }}" placeholder="Buscar plan" />
+            <input type="hidden" name="p" />
+        </form>
+    </div>
+</div>
+<table class="table table-condensed table-hover table-striped">
+    <thead>
+        <tr>
+            <th class="col-md-1">Año</th>
+            <th class="col-md-10">Destino</th>
+            <th class="col-md-1">Plan</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for plan in object_list %}
+        <tr id="{{ plan.html_id }}">
+            <td>
+                {{ plan.year }}
+            </td>
+            <td>
+                {{ plan.destination.name }}<br/>
+                <small>{{ plan.destination.area.name }}</small><br/>
+                <small class="actions">
+                    <a href="{% url 'plan_update' plan.year plan.destination.code %}?volver={{ request.get_full_path|add:'#'|add:plan.html_id|urlencode }}">Editar</a>
+                    <a href="{% url 'plan_delete' plan.year plan.destination.code %}?volver={{ request.get_full_path|add:'#'|add:plan.html_id|urlencode }}">Eliminar</a>
+                </small>
+            </td>
+            <td>
+                {{ plan.amount|floatformat:2 }}
+            </td>
+            
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="3">No hay planes para mostrar.</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% include "snippets/_pager.html" %}
+{% endblock content %}

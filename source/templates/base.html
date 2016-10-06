@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>{% block title %}{{ headline }} | {{ BRAND_SHORT }}{% endblock title %}</title>
+    
+    <link rel="stylesheet" href="{% static 'styles/bootstrap.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'styles/bootstrap-theme.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'styles/font-awesome.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'styles/jquery.ui.theme.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'styles/jquery.ui.datepicker.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'styles/select2.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'styles/select2-bootstrap.css' %}" type="text/css">
+</head>
+
+<body>
+    <style>
+        body { 
+            overflow-y: scroll; 
+            margin-bottom: 5em;
+        }
+        .floating { cursor: pointer; }
+    </style>
+    {% block precontent %}
+    {% endblock precontent %}
+    <div class="container" style="margin-top:70px">
+    {% block content %}
+    {% endblock content %}
+    </div>
+    <script type="text/javascript" src="{% static 'scripts/jquery.js' %}"></script>
+    <script type="text/javascript" src="{% static 'scripts/jquery-ui.js' %}"></script>
+    <script type="text/javascript" src="{% static 'scripts/bootstrap.js' %}"></script>
+    <script type="text/javascript" src="{% static 'scripts/select2.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'scripts/select2-locale-es.js' %}"></script>
+    <script type="text/javascript" src="{% static 'scripts/custom-filter.js' %}"></script>
+    <script type="text/javascript">
+        $(function(){
+            $(".dateinput")
+                .datepicker({ dateFormat:"dd/mm/yy" })
+                .datepicker('option', 'prevText', '')
+                .datepicker('option', 'nextText', '')
+                .datepicker('option', 'monthNames', ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'])
+                .datepicker('option', 'dayNamesMin', ['Dom','Lun','Mar','Mie','Jue','Vie','Sab']);
+            $('select', 'form[method=post]').select2();
+            $('.floating').draggable({ cursor: 'pointer' });
+            $('[data-toggle=popover]').popover({});
+        });
+    </script>
+    {% block scripts %}
+    {% endblock scripts %}
+</body>
+
+</html>

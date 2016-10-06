@@ -1,0 +1,62 @@
+{% extends "base_backend.html" %}
+{% load money %}
+
+{% block content %}
+<style>
+    .actions { opacity: 0; transition: all .2s ease; }
+    tr:hover .actions { opacity: 1; }
+</style>
+<div class="page-header">
+    <h2>
+        {{ headline }}
+        <a class="btn btn-success pull-right" href="{% url 'funding_create' %}?volver={{ request.get_full_path|urlencode }}">Nueva asignación</a>
+    </h2>
+    <div class="pull-left">
+        {% if request.GET.q %}
+        <a href="{{ request.path }}">Borrar todos los filtros</a>
+        {% endif %}
+    </div>
+    <div class="row">
+        <form id="filter" class="col-md-4 pull-right">
+            <input type="text" class="form-control" name="q" value="{{ request.GET.q }}" placeholder="Buscar asignaciones" />
+            <input type="hidden" name="p" />
+        </form>
+    </div>
+</div>
+<table class="table table-hover table-striped">
+    <thead>
+        <tr>
+            <th class="col-md-1">Asignación</th>
+            <th class="col-md-10">Detalles</th>
+            <th class="col-md-1">Importe</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for funding in object_list %}
+        <tr id="{{ funding.html_id }}">
+            <td>
+                {{ funding.yuid }}<br/>
+                <small>{{ funding.date|date:"d/m/y" }}</small>
+            </td>
+            <td>
+                {{ funding.element }}<br/>
+                <small class="text-muted">{{ funding.description|default:"No se especificaron más detalles" }}</small><br/>
+                <small class="actions">
+                    <a href="{% url 'funding_update' funding.date.year funding.yuid %}?volver={{ request.get_full_path|add:'#'|add:funding.html_id|urlencode }}">Editar</a>
+                    <a href="{% url 'funding_delete' funding.date.year funding.yuid %}?volver={{ request.get_full_path|add:'#'|add:funding.html_id|urlencode }}">Eliminar</a>
+                </small>
+            </td>
+            <td class="text-right">
+                {{ funding.amount|money }}
+            </td>
+            
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="3">No hay asignaciones para mostrar.</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% include "snippets/_pager.html" %}
+{% endblock content %}

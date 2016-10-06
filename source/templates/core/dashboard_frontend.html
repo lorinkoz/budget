@@ -1,0 +1,15 @@
+{% extends "base_frontend.html" %}
+
+{% block content %}
+<div class="page-header">
+	<h1>
+		{{ BRAND_SHORT }}<br/>
+		<small>{{ request.user.get_full_name }}</small>
+	</h1>
+</div>
+<div>
+{% for area in my_areas %}
+    <a href="{% url 'area_consultor' area.slug %}">{{ area.name }}</a><br/>
+{% endfor %}
+</div>
+{% endblock content %}

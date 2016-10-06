@@ -1,0 +1,45 @@
+{% extends "base_backend.html" %}
+{% load money crispy_forms_filters %}
+
+{% block content %}
+<style>
+    #filter select {
+        margin-left: 5px;
+    }
+</style>
+<div class="page-header">
+    <h2>{{ headline }}</h2>
+</div>
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th class="col-md-6">Destino</th>
+            <th class="col-md-1 text-center">Planificado</th>
+            <th class="col-md-1 text-center" colspan="2">Ejecutado</th>
+            <th class="col-md-1 text-center">Disponible</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for row in data %}
+        {% if forloop.last or row.plan != 0 or row.book != 0 %}
+        <tr {% if forloop.last %}style="font-weight:bold"{% endif %}>
+            <td>
+                {{ row.name }}
+                {% if not forloop.last %}
+                <a href="{% url 'plan_area' row.extra.area.slug 'actual' %}">(Ver planificación)</a>
+                {% endif %}
+            </td>
+            <td class="text-right">{{ row.plan|money }}</td>
+            <td class="text-right">{{ row.book|money }}</td>
+            <td class="text-right">{{ row.book_percent|floatformat:2 }}%</td>
+            <td class="text-right">{{ row.available|money }}</td>
+        </tr>
+        {% endif %}
+    {% empty %}
+        <tr>
+            <td colspan="5">No hay datos para mostrar.</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock content %}

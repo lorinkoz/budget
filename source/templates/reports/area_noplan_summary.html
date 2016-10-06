@@ -1,0 +1,38 @@
+{% extends "base_backend.html" %}
+{% load crispy_forms_filters money %}
+
+{% block content %}
+<style>
+    #filter select {
+        margin-left: 5px;
+    }
+</style>
+<div class="page-header">
+    <h2>{{ headline }}</h2>
+</div>
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th class="col-md-6">Area</th>
+            <th class="col-md-1 text-center">Plan</th>
+            <th class="col-md-1 text-center">Ejecutado</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for row in data %}
+        <tr>
+            <td>
+                {{ row.name }}
+                <a href="{% url 'area_detailed' row.extra.slug %}">(Detalles)</a>
+            </td>
+            <td class="text-center"><a href="{% url 'plan_area' row.extra.slug 'actual' %}?volver={{ request.get_full_path }}">Planificar {% now "Y" %}</a></td>
+            <td class="text-right">{{ row.book|money }}</td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="4">No hay datos para mostrar.</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock content %}
