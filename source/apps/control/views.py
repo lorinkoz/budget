@@ -54,7 +54,7 @@ class PlanUpdate(StaffRequiredMixin, SetHeadlineMixin, UpdateView):
     form_class = forms.PlanForm
     headline = 'Editar plan %s'
     template_name = 'control/plan_form.html'
-    
+
     def get_object(self):
         return self.model.objects.get(destination__code=self.kwargs.get('code'), year=self.kwargs.get('year'))
 
@@ -94,11 +94,16 @@ class PlanArea(StaffRequiredMixin, TemplateView):
 
     def dispatch(self, request, slug, year):
         this_year = timezone.now().year
-        self.year = this_year if  year == 'actual' else this_year + 1
+        years = {
+            'anterior': this_year - 1,
+            'actual': this_year,
+            'proximo': this_year + 1,
+        }
+        self.year = years[year]
         self.area = get_object_or_404(Area, slug=slug)
         self.headline = 'Planificación %s (%s)' % (self.area.name, self.year)
         return super(PlanArea, self).dispatch(request, slug, year)
-        
+
     def post(self, request, *args, **kwargs):
         for destination in self.area.destinations.order_by('-status','element__code'):
             plan, created = models.Plan.objects.get_or_create(year=self.year, destination=destination)
@@ -195,7 +200,7 @@ class RecordUpdate(StaffRequiredMixin, SetHeadlineMixin, UpdateView):
     form_class = forms.RecordForm
     headline = 'Editar registro %s'
     template_name = 'control/record_form.html'
-    
+
     def get_object(self):
         return self.model.objects.get(yuid=self.kwargs.get('yuid'), date__year=self.kwargs.get('year'))
 
@@ -221,7 +226,7 @@ class RecordConfirm(StaffRequiredMixin, SetHeadlineMixin, DetailView):
 
     def get_headline(self):
         return self.headline % self.get_object()
-    
+
     def post(self, request, *args, **kwargs):
         target = self.get_object()
         target.status = True
@@ -233,7 +238,7 @@ class RecordCancel(StaffRequiredMixin, SetHeadlineMixin, DetailView):
     model = models.Record
     headline = 'Cancelar registro %s'
     template_name = 'control/record_cancel.html'
-    
+
     def get_object(self):
         return self.model.objects.get(yuid=self.kwargs.get('yuid'), date__year=self.kwargs.get('year'))
 
@@ -251,7 +256,7 @@ class RecordReset(StaffRequiredMixin, SetHeadlineMixin, DetailView):
     model = models.Record
     headline = 'Restablecer registro %s'
     template_name = 'control/record_reset.html'
-    
+
     def get_object(self):
         return self.model.objects.get(yuid=self.kwargs.get('yuid'), date__year=self.kwargs.get('year'))
 
@@ -321,7 +326,7 @@ class FundingUpdate(StaffRequiredMixin, SetHeadlineMixin, UpdateView):
     form_class = forms.FundingForm
     headline = 'Editar asignación %s'
     template_name = 'control/funding_form.html'
-    
+
     def get_object(self):
         return self.model.objects.get(yuid=self.kwargs.get('yuid'), date__year=self.kwargs.get('year'))
 

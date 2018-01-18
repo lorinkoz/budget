@@ -14,6 +14,7 @@ def get_years():
 def get_perspective_years():
     this_year = timezone.now().date().year
     return (
+    	('anterior', this_year - 1),
     	('actual', this_year),
     	('proximo', this_year + 1),
     )
