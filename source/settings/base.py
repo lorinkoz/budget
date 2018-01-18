@@ -11,7 +11,7 @@ BRAND_SHORT = 'Presupuesto'
 BRAND_LONG = 'Sistema para la Gestión del Presupuesto'
 VERSION = '2.0'
 
-ADMINS = (('Lorenzo Peña', 'lorinkoz@vrea.uho.edu.cu'),)
+ADMINS = (('Lorenzo Peña', 'lorinkoz@uho.edu.cu'),)
 MANAGERS = ADMINS
 
 
@@ -29,10 +29,10 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+
     'braces',
     'crispy_forms',
-    
+
     'apps.core',
     'apps.users',
     'apps.control',
