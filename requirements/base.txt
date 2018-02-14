@@ -1,4 +1,4 @@
-django
-psycopg2
-django-braces
-django-crispy-forms
+django==1.7.3
+psycopg2==2.4.5
+django-braces==1.4.0
+django-crispy-forms==1.4.0
