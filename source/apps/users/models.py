@@ -6,6 +6,8 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.utils.encoding import python_2_unicode_compatible
 
+from common.constants import CURRENCIES
+
 
 class UserManager(BaseUserManager):
 
@@ -26,34 +28,36 @@ class UserManager(BaseUserManager):
 
 @python_2_unicode_compatible
 class User(AbstractBaseUser):
-    
+
     ROLES = (
         (0, 'Inactivo'),
         (1, 'Consultor'),
         (2, 'Operador'),
         (3, 'Administrador'),
     )
-    
+
     email = models.EmailField(verbose_name='correo electrónico', unique=True)
     display_name = models.CharField(verbose_name='nombre', max_length=50, blank=True)
-    
+
     date_created = models.DateTimeField(auto_now_add=True)
     role = models.PositiveIntegerField(verbose_name='rol', choices=ROLES, default=0)
 
-    areas = models.ManyToManyField('core.Area', verbose_name='areas autorizadas', through='AreaAuthority') 
+    areas = models.ManyToManyField('core.Area', verbose_name='areas autorizadas', through='AreaAuthority')
+
+    default_currency = models.CharField(verbose_name='moneda por defecto', max_length=3, default=CURRENCIES[0][0], choices=CURRENCIES)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ()
-    
+
     objects = UserManager()
 
     class Meta:
         verbose_name = 'usuario'
         verbose_name_plural = 'usuarios'
-    
+
     def __str__(self):
         return self.get_short_name()
-    
+
     def get_full_name(self):
         return self.display_name
     get_full_name.short_description = 'nombre completo'
@@ -61,21 +65,21 @@ class User(AbstractBaseUser):
     def get_short_name(self):
         return self.email
     get_short_name.short_description = 'email'
-    
+
     def has_perm(self, perm, obj=None):
         return self.is_staff or self.is_superuser
 
     def has_module_perms(self, app_label):
         return self.is_staff or self.is_superuser
-    
+
     @property
     def is_active(self):
         return self.role >= 1
-    
+
     @property
     def is_staff(self):
         return self.role >= 2
-    
+
     @property
     def is_superuser(self):
         return self.role >= 3

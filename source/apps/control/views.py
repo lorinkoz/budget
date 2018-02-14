@@ -194,6 +194,11 @@ class RecordCreate(StaffRequiredMixin, SetHeadlineMixin, CreateView):
     def get_success_url(self):
         return self.request.GET.get('volver', reverse('record_list'))
 
+    def get_initial(self):
+        return {
+            'currency': self.request.user.default_currency,
+        }
+
 
 class RecordUpdate(StaffRequiredMixin, SetHeadlineMixin, UpdateView):
     model = models.Record
@@ -319,6 +324,11 @@ class FundingCreate(StaffRequiredMixin, SetHeadlineMixin, CreateView):
 
     def get_success_url(self):
         return self.request.GET.get('volver', reverse('funding_list'))
+
+    def get_initial(self):
+        return {
+            'currency': self.request.user.default_currency,
+        }
 
 
 class FundingUpdate(StaffRequiredMixin, SetHeadlineMixin, UpdateView):

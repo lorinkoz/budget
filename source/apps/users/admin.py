@@ -25,8 +25,9 @@ class UserAdmin(DefaultUserAdmin):
     filter_horizontal = ()
     list_filter = ()
     fieldsets = (
-        ('información básica', {'fields': ('email', 'display_name')}),
-        ('información de seguridad', {'fields': ('password', 'role')}),
+        ('Información básica', {'fields': ('email', 'display_name')}),
+        ('Información de seguridad', {'fields': ('password', 'role')}),
+        ('Otros datos', {'fields': ('default_currency',)}),
     )
     add_fieldsets = (
         (None, {'fields': ('email', 'password1', 'password2')}),
