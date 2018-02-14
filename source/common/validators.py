@@ -5,8 +5,8 @@ from django.core.validators import ValidationError, RegexValidator, MinValueVali
 
 
 def zero_validator(value):
-	if value <= 0:
-		raise ValidationError('Debe especificar un valor estrictamente positivo.')
+    if value <= 0:
+        raise ValidationError('Debe especificar un valor estrictamente positivo.')
 
 positive_validator = MinValueValidator(0)
 

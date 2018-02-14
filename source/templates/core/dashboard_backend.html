@@ -2,73 +2,73 @@
 
 {% block content %}
 <div class="page-header">
-	<h1>
-		{% now "F j, Y" %} &dash; <span id="hours"></span>:<span id="minutes"></span><small>.<span id="seconds"></span></small><br/>
-		<small>{{ request.user.get_full_name }}</small>
-	</h1>
+    <h1>
+        {% now "F j, Y" %} &dash; <span id="hours"></span>:<span id="minutes"></span><small>.<span id="seconds"></span></small><br/>
+        <small>{{ request.user.get_full_name }}</small>
+    </h1>
 </div>
 <div class="row">
-	<div class="col-md-3">
-		<div class="panel panel-default">
-			<div class="panel-heading text-uppercase"><small>Acciones rápidas</small></div>
-			<ul class="list-group">
-				<li class="list-group-item"><a href="{% url 'record_create' %}">Agregar registro</a></li>
-				<li class="list-group-item"><a href="{% url 'funding_create' %}">Agregar asignación</a></li>
-				<li class="list-group-item"><a href="{% url 'plan_area_selector' %}">Planificar área</a></li>
-			</ul>
-		</div>
-	</div>
-	<div class="col-md-3">
-		<div class="panel panel-default">
-			<div class="panel-heading text-uppercase"><small>Accesos directos</small></div>
-			<ul class="list-group">
-				<li class="list-group-item"><a href="{% url 'availability_report' %}">Disponibilidad de fondos</a></li>
-				<li class="list-group-item">
-					<a href="{% url 'pending_record_list' %}">Registros pendientes</a>
-					<span class="badge">{{ stats.pending_records }}</span>
-				</li>
-				<li class="list-group-item">
-					<a href="{% url 'area_noplan_summary' %}">Áreas sin planificar</a>
-					<span class="badge">{{ stats.no_plan_areas }}</span>
-				</li>
-				<li class="list-group-item">
-					<a href="{% url 'overdrawns_report' %}">Destinos sobregirados</a>
-					<span class="badge">{{ stats.overdrawns }}</span>
-				</li>
-			</ul>
-		</div>
-	</div>
+    <div class="col-md-3">
+        <div class="panel panel-default">
+            <div class="panel-heading text-uppercase"><small>Acciones rápidas</small></div>
+            <ul class="list-group">
+                <li class="list-group-item"><a href="{% url 'record_create' %}">Agregar registro</a></li>
+                <li class="list-group-item"><a href="{% url 'funding_create' %}">Agregar asignación</a></li>
+                <li class="list-group-item"><a href="{% url 'plan_area_selector' %}">Planificar área</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="panel panel-default">
+            <div class="panel-heading text-uppercase"><small>Accesos directos</small></div>
+            <ul class="list-group">
+                <li class="list-group-item"><a href="{% url 'availability_report' %}">Disponibilidad de fondos</a></li>
+                <li class="list-group-item">
+                    <a href="{% url 'pending_record_list' %}">Registros pendientes</a>
+                    <span class="badge">{{ stats.pending_records }}</span>
+                </li>
+                <li class="list-group-item">
+                    <a href="{% url 'area_noplan_summary' %}">Áreas sin planificar</a>
+                    <span class="badge">{{ stats.no_plan_areas }}</span>
+                </li>
+                <li class="list-group-item">
+                    <a href="{% url 'overdrawns_report' %}">Destinos sobregirados</a>
+                    <span class="badge">{{ stats.overdrawns }}</span>
+                </li>
+            </ul>
+        </div>
+    </div>
 </div>
 {% endblock content %}
 
 {% block scripts %}
 <script type="text/javascript">
-	var hours = {% now "G" %};
-	var minutes = {% now "i" %};
-	var seconds = {% now "s" %};
-	
-	function tick() {
-		seconds++;
-		if (seconds == 60) {
-			seconds = 0;
-			minutes++;
-		}
-		if (minutes == 60) {
-			minutes = 0;
-			hours++;
-		}
-		if (hours == 24) {
-			hours = 0;
-			location.href = "{{ request.get_full_path }}";
-		}
-		$("#hours").html(hours);
-		$("#minutes").html(minutes < 10 ? "0" + minutes.toString() : minutes);
-		$("#seconds").html(seconds < 10 ? "0" + seconds.toString() : seconds);
-		window.setTimeout(tick, 1000);
-	}
+    var hours = {% now "G" %};
+    var minutes = {% now "i" %};
+    var seconds = {% now "s" %};
+    
+    function tick() {
+        seconds++;
+        if (seconds == 60) {
+            seconds = 0;
+            minutes++;
+        }
+        if (minutes == 60) {
+            minutes = 0;
+            hours++;
+        }
+        if (hours == 24) {
+            hours = 0;
+            location.href = "{{ request.get_full_path }}";
+        }
+        $("#hours").html(hours);
+        $("#minutes").html(minutes < 10 ? "0" + minutes.toString() : minutes);
+        $("#seconds").html(seconds < 10 ? "0" + seconds.toString() : seconds);
+        window.setTimeout(tick, 1000);
+    }
 
-	$(function(){
-		tick();
-	});
+    $(function(){
+        tick();
+    });
 </script>
 {% endblock scripts %}

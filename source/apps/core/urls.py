@@ -8,7 +8,7 @@ from . import views
 
 urlpatterns = patterns('',
     
-	url(r'^$', views.SorterView.as_view(), name='sorter'),
+    url(r'^$', views.SorterView.as_view(), name='sorter'),
 
     url(r'^panel/$', views.BackendDashboard.as_view(), name='backend_dashboard'),
     url(r'^resumen/$', views.FrontendDashboard.as_view(), name='frontend_dashboard'),

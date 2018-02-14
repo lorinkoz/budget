@@ -31,7 +31,7 @@ class FundingForm(forms.ModelForm):
 
 class PlanAreaForm(forms.Form):
 
-	YEARS = get_perspective_years()
+    YEARS = get_perspective_years()
 
-	area = forms.ModelChoiceField(label='Area', queryset=Area.objects.all())
-	year = forms.ChoiceField(label='Año', choices=YEARS, initial=YEARS[1][0])
+    area = forms.ModelChoiceField(label='Area', queryset=Area.objects.all())
+    year = forms.ChoiceField(label='Año', choices=YEARS, initial=YEARS[1][0])

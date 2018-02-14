@@ -11,9 +11,9 @@ from . import models
 @admin.register(models.Record, site=myadmin)
 class RecordAdmin(admin.ModelAdmin):
     search_fields = (
-    	'yuid', 'destination__code', 'destination__name',
-    	'destination__area__code', 'destination__area__name',
-    	'concept__code', 'concept__name', 'description'
+        'yuid', 'destination__code', 'destination__name',
+        'destination__area__code', 'destination__area__name',
+        'concept__code', 'concept__name', 'description'
     )
     list_display = ('yuid', 'date', 'destination', 'concept', 'amount', 'status')
     readonly_fields = ('yuid',)

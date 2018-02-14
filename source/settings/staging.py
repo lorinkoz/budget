@@ -23,8 +23,8 @@ DATABASES = {
 }
 
 AUTHENTICATION_BACKENDS = (
-	'apps.users.backends.OpenLdapUHOBackend',
-	'django.contrib.auth.backends.ModelBackend',
+    'apps.users.backends.OpenLdapUHOBackend',
+    'django.contrib.auth.backends.ModelBackend',
 )
 
 STATIC_URL = '/presupuesto/static/'
