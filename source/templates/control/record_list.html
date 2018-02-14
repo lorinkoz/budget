@@ -32,7 +32,7 @@
     <thead>
         <tr>
             <th class="col-md-1">Registro</th>
-            <th class="col-md-7">Detalles</th>
+            <th class="col-md-6">Detalles</th>
             <th class="col-md-3">Tipo / Estado</th>
             <th class="col-md-1">
                 Importe
@@ -40,6 +40,7 @@
                     <i class="fa fa-dollar"></i>
                 </button>
             </th>
+            <th class="col-md-1">Moneda</th>
             <th class=""></th>
         </tr>
     </thead>
@@ -71,13 +72,16 @@
             <td class="text-right" style="padding-right:1.5em">
                 {{ record.amount }}
             </td>
+            <td class="text-center">
+                {{ record.get_currency_display }}
+            </td>
             <td class="{% if record.is_cancelled %}danger{% elif record.is_confirmed %}success{% elif record.is_pending %}warning{% endif %}">
                 <i class="fa fa-{% if record.is_cancelled %}times{% elif record.is_confirmed %}check{% elif record.is_pending %}question{% endif %}-circle text-{% if record.is_cancelled %}danger{% elif record.is_confirmed %}success{% elif record.is_pending %}warning{% endif %}"></i>
             </td>
         </tr>
     {% empty %}
         <tr>
-            <td colspan="5">No hay registros para mostrar.</td>
+            <td colspan="6">No hay registros para mostrar.</td>
         </tr>
     {% endfor %}
     </tbody>

@@ -10,6 +10,7 @@ from braces.views import SetHeadlineMixin
 
 from . import forms
 from common.utils import assessment
+from common.constants import CURRENCIES
 from common.mixins import ConsultorRequiredMixin, StaffRequiredMixin
 from apps.core.models import Area, Element
 
@@ -121,7 +122,10 @@ class AvailabilityReport(StaffRequiredMixin, SetHeadlineMixin, TemplateView):
 	    filter_form = forms.YearFilterForm(self.request.GET)
 	    year = filter_form.get_year()
 	    context['year'] = year
-	    context['data'] = assessment.assess_availability(year)
+	    context['grouped_data'] = [
+            (currency, assessment.assess_availability(year, code))
+            for code, currency in CURRENCIES
+        ]
 	    context['filter'] = filter_form
 	    return context
 

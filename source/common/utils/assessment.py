@@ -8,7 +8,7 @@ from apps.control.models import Record, Plan, Funding
 
 
 class RowInfo:
-    
+
     def __init__(self, name, plan, bank, book, **kwargs):
         self.name = name
         self.plan = plan
@@ -263,17 +263,20 @@ def assess_elements(year, month, specific):
     return results
 
 
-def assess_availability(target_year=None):
+def assess_availability(target_year=None, currency=None):
     tree = _get_elements_tree()
     elements = {}
+    extra = {}
+    if currency:
+        extra['currency'] = currency
     for element in Element.objects.filter(parent=None):
         elements[element.pk] = [0, 0, 0]
-        funding = Funding.objects.filter(element=element)
+        funding = Funding.objects.filter(element=element, **extra)
         if target_year:
             funding = funding.filter(date__year=target_year)
         funding = funding.aggregate(sum=Sum('amount'))['sum'] or 0
         elements[element.pk][0] = funding
-        records = Record.objects.filter(destination__element__pk__in=tree[element.pk]['scope']).exclude(status=False)
+        records = Record.objects.filter(destination__element__pk__in=tree[element.pk]['scope'], **extra).exclude(status=False)
         if target_year:
             records = records.filter(date__year=target_year)
         bundle =  records.values('status','concept__positive').annotate(sum=Sum('amount'))

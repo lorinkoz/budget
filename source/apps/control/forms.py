@@ -19,14 +19,14 @@ class RecordForm(forms.ModelForm):
 
     class Meta:
         model = models.Record
-        fields = ('date', 'destination', 'concept', 'amount', 'description', 'plan')
+        fields = ('date', 'destination', 'concept', 'amount', 'currency', 'description', 'plan')
 
 
 class FundingForm(forms.ModelForm):
 
     class Meta:
         model = models.Funding
-        fields = ('date', 'element', 'amount', 'description')
+        fields = ('date', 'element', 'amount', 'currency', 'description')
 
 
 class PlanAreaForm(forms.Form):

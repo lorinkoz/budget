@@ -9,38 +9,52 @@
         <form id="filter" class="form-inline pull-right">{{ filter|crispy }}</form>
     </h2>
 </div>
-<table class="table table-striped table-bordered">
-    <thead>
-        <tr>
-            <th class="col-md-6"  rowspan="2">Elemento</th>
-            <th class="col-md-2 text-center" rowspan="2">Asignado</th>
-            <th class="col-md-2 text-center" colspan="3">Según banco</th>
-            <th class="col-md-2 text-center" colspan="3">Según libros</th>
-        </tr>
-        <tr>
-            <th class="text-center" colspan="2">Ejecutado</th>
-            <th class="text-center">Disponible</th>
-            <th class="text-center" colspan="2">Ejecutado</th>
-            <th class="text-center">Disponible</th>
-        </tr>
-    </thead>
-    <tbody>
-    {% for row in data %}
-        <tr {% if forloop.last %}style="font-weight:bold"{% endif %} {% if row.available < 0 %}class="danger"{% endif %}>
-            <td>{{ row.name }}</td>
-            <td class="text-right">{{ row.plan|money }}</td>
-            <td class="text-right">{{ row.bank|money }}</td>
-            <td class="text-right">{{ row.bank_percent|floatformat:2 }}%</td>
-            <td class="text-right">{{ row.available_bank|money }}</td>
-            <td class="text-right">{{ row.book|money }}</td>
-            <td class="text-right">{{ row.book_percent|floatformat:2 }}%</td>
-            <td class="text-right">{{ row.available|money }}</td>
-        </tr>
-    {% empty %}
-        <tr>
-            <td colspan="5">No hay datos para mostrar.</td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
+<ul class="nav nav-pills" role="tablist">
+{% for currency, data in grouped_data %}
+    <li class="{% if forloop.first %}active{% endif %}">
+        <a href="#{{ currency }}" role="tab" data-toggle="tab">{{ currency }}</a>
+    </li>
+{% endfor %}
+</ul>
+<br/>
+<div class="tab-content">
+{% for currency, data in grouped_data %}
+    <div class="tab-pane {% if forloop.first %}active{% endif %}" id="{{ currency }}">
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th class="col-md-6"  rowspan="2">Elemento</th>
+                    <th class="col-md-2 text-center" rowspan="2">Asignado</th>
+                    <th class="col-md-2 text-center" colspan="3">Según banco</th>
+                    <th class="col-md-2 text-center" colspan="3">Según libros</th>
+                </tr>
+                <tr>
+                    <th class="text-center" colspan="2">Ejecutado</th>
+                    <th class="text-center">Disponible</th>
+                    <th class="text-center" colspan="2">Ejecutado</th>
+                    <th class="text-center">Disponible</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for row in data %}
+                <tr {% if forloop.last %}style="font-weight:bold"{% endif %} {% if row.available < 0 %}class="danger"{% endif %}>
+                    <td>{{ row.name }}</td>
+                    <td class="text-right">{{ row.plan|money }}</td>
+                    <td class="text-right">{{ row.bank|money }}</td>
+                    <td class="text-right">{{ row.bank_percent|floatformat:2 }}%</td>
+                    <td class="text-right">{{ row.available_bank|money }}</td>
+                    <td class="text-right">{{ row.book|money }}</td>
+                    <td class="text-right">{{ row.book_percent|floatformat:2 }}%</td>
+                    <td class="text-right">{{ row.available|money }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="5">No hay datos para mostrar.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endfor %}
+</div>
 {% endblock content %}

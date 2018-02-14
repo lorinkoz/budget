@@ -27,8 +27,9 @@
     <thead>
         <tr>
             <th class="col-md-1">Asignación</th>
-            <th class="col-md-10">Detalles</th>
+            <th class="col-md-9">Detalles</th>
             <th class="col-md-1">Importe</th>
+            <th class="col-md-1">Moneda</th>
         </tr>
     </thead>
     <tbody>
@@ -49,11 +50,13 @@
             <td class="text-right">
                 {{ funding.amount|money }}
             </td>
-            
+            <td class="text-center">
+                {{ funding.get_currency_display }}
+            </td>
         </tr>
     {% empty %}
         <tr>
-            <td colspan="3">No hay asignaciones para mostrar.</td>
+            <td colspan="4">No hay asignaciones para mostrar.</td>
         </tr>
     {% endfor %}
     </tbody>
