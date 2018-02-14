@@ -1,4 +1,5 @@
+*.coverage
+*.pyc
 coverage/
 storage/
-*.pyc
-*.coverage
+venv/
