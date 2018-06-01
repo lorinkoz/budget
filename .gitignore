@@ -2,4 +2,5 @@
 *.coverage
 *.pyc
 coverage/
+static/
 storage/

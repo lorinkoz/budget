@@ -23,7 +23,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'presup',
         'USER': 'presup',
-        'PASSWORD': config('../storage/config/dbpwd'),
+        'PASSWORD': config('storage/config/dbpwd'),
         'HOST': '',
         'PORT': '',
     },
@@ -40,6 +40,6 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_COOKIE_SECURE = CSRF_COOKIE_SECURE = True
 
 STATIC_URL = '/presupuesto/static/'
-STATIC_ROOT = path('../storage/static/')
+STATIC_ROOT = path('storage/static/')
 
-SECRET_KEY = config('../storage/config/hash')
+SECRET_KEY = config('storage/config/hash')
