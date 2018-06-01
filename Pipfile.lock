@@ -1,0 +1,69 @@
+{
+    "_meta": {
+        "hash": {
+            "sha256": "c724b35c4a7a99cbd53beeb91a3d746488c2d1c44ccd38fd1c88e2e7a356f9ea"
+        },
+        "pipfile-spec": 6,
+        "requires": {
+            "python_version": "2.7"
+        },
+        "sources": [
+            {
+                "name": "pypi",
+                "url": "https://pypi.org/simple",
+                "verify_ssl": true
+            }
+        ]
+    },
+    "default": {
+        "django": {
+            "hashes": [
+                "sha256:72edd47b55ae748d29f1a71d5ca4b86e785c9fb974407cf242b3168e6f1b177e",
+                "sha256:f226fb8aa438456968d403f6739de1cf2dad128db86f66ee2b41dfebe3645c5b"
+            ],
+            "index": "pypi",
+            "version": "==1.7.3"
+        },
+        "django-braces": {
+            "hashes": [
+                "sha256:395dfb84f73fade32c0a1fc946bd9d4a498fff3c505a911b26cb98def178703b",
+                "sha256:536a0dab62b30c54165b191b95bc7a84be5bf901f7b43f9fbf5655ad2fcf4a9e"
+            ],
+            "index": "pypi",
+            "version": "==1.4.0"
+        },
+        "django-crispy-forms": {
+            "hashes": [
+                "sha256:d0c9531ebdff8dc255f625e677ec2fab326522e3f4cd8f7a3e891d773d281510"
+            ],
+            "index": "pypi",
+            "version": "==1.4.0"
+        },
+        "psycopg2": {
+            "hashes": [
+                "sha256:48b702a7ca479e1bc2c1a7b81875a07d474298132605993e2cb979f5e08277d7"
+            ],
+            "index": "pypi",
+            "version": "==2.4.5"
+        },
+        "python-ldap": {
+            "hashes": [
+                "sha256:67cc7801bf24c29386ab99966ceb68d6a60fa9e0566cc95a4fbb2c4695a8ce54",
+                "sha256:a7f73fb64e465a96dffd511e36e6067c81bec01e7285bdc0aa2e8dd273cc7210",
+                "sha256:b4601d314cc5eb3f42c201b2ed4e413b1503f0b26963daabada42fe90216602d",
+                "sha256:c978a03554e7045038947e271bc011eb060e10355063304d63dae822ea39ba20",
+                "sha256:f44676f05cffbd62f315802f3a767e04b12c8175fea4ad6cf7e6b9b727d87893"
+            ],
+            "index": "pypi",
+            "version": "==2.4.10"
+        },
+        "six": {
+            "hashes": [
+                "sha256:70e8a77beed4562e7f14fe23a786b54f6296e34344c23bc42f07b15018ff98e9",
+                "sha256:832dc0e10feb1aa2c68dcc57dbb658f1c7e65b9b61af69048abc87a2db00a0eb"
+            ],
+            "version": "==1.11.0"
+        }
+    },
+    "develop": {}
+}

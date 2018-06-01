@@ -1,0 +1,16 @@
+[[source]]
+url = "https://pypi.org/simple"
+name = "pypi"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+"psycopg2" = "*"
+django-braces = "*"
+django-crispy-forms = "*"
+python-ldap = "*"
+Django = "*"
+
+[requires]
+python_version = "2.7"
