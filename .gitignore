@@ -1,5 +1,5 @@
+.venv/
 *.coverage
 *.pyc
 coverage/
 storage/
-venv/
