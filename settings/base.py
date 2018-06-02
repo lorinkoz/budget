@@ -37,7 +37,6 @@ INSTALLED_APPS = (
     'apps.users',
     'apps.control',
     'apps.reports',
-    'apps.setup',
 )
 
 MIDDLEWARE_CLASSES = (
