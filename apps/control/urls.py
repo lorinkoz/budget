@@ -8,11 +8,6 @@ from . import views
 
 urlpatterns = patterns('',
 
-    # url(r'^planes/$', views.PlanList.as_view(), name='plan_list'),
-    # url(r'^planes/agregar/$', views.PlanCreate.as_view(), name='plan_create'),
-    # url(r'^planes/editar/(?P<year>\d+)/(?P<code>[\w-]+)/$', views.PlanUpdate.as_view(), name='plan_update'),
-    # url(r'^planes/eliminar/(?P<year>\d+)/(?P<code>[\w-]+)/$', views.PlanDelete.as_view(), name='plan_delete'),
-
     url(r'^planificar/$', views.PlanAreaSelector.as_view(), name='plan_area_selector'),
     url(r'^planificar/(?P<slug>[\w-]+)/(?P<year>anterior|actual|proximo)/$', views.PlanArea.as_view(), name='plan_area'),
 
@@ -25,8 +20,6 @@ urlpatterns = patterns('',
     url(r'^registros/editar/(?P<year>\d+)/(?P<yuid>\d+)/$', views.RecordUpdate.as_view(), name='record_update'),
     url(r'^registros/confirmar/(?P<year>\d+)/(?P<yuid>\d+)/$', views.RecordConfirm.as_view(), name='record_confirm'),
     url(r'^registros/cancelar/(?P<year>\d+)/(?P<yuid>\d+)/$', views.RecordCancel.as_view(), name='record_cancel'),
-    # url(r'^registros/restablecer/(?P<year>\d+)/(?P<yuid>\d+)/$', views.RecordReset.as_view(), name='record_reset'),
-    # url(r'^registros/eliminar/(?P<year>\d+)/(?P<yuid>\d+)/$', views.RecordDelete.as_view(), name='record_delete'),
 
     url(r'^asignaciones/$', views.FundingList.as_view(), name='funding_list'),
     url(r'^asignaciones/agregar/$', views.FundingCreate.as_view(), name='funding_create'),

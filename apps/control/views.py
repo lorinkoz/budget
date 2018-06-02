@@ -18,68 +18,6 @@ from common.utils.assessment import assess_records, area_plan_grid
 from apps.core.models import Area
 
 
-class PlanList(StaffRequiredMixin, SetHeadlineMixin, ListView):
-    model = models.Plan
-    paginate_by = 25
-    page_kwarg = 'p'
-    headline = 'Planes'
-    template_name = 'control/plan_list.html'
-
-    def get_queryset(self):
-        queryset = super(PlanList, self).get_queryset()
-        query = self.request.GET.get('q','')
-        if query:
-            queryset = queryset.filter(
-                Q(year__iexact=query)|
-                Q(destination__code__iexact=query)|
-                Q(destination__name__icontains=query)|
-                Q(destination__area__name__icontains=query)|
-                Q(amount__iexact=query)
-            )
-        return queryset
-
-
-class PlanCreate(StaffRequiredMixin, SetHeadlineMixin, CreateView):
-    model = models.Plan
-    form_class = forms.PlanForm
-    headline = 'Nuevo plan'
-    template_name = 'control/plan_form.html'
-
-    def get_success_url(self):
-        return self.request.GET.get('volver', reverse('plan_list'))
-
-
-class PlanUpdate(StaffRequiredMixin, SetHeadlineMixin, UpdateView):
-    model = models.Plan
-    form_class = forms.PlanForm
-    headline = 'Editar plan %s'
-    template_name = 'control/plan_form.html'
-
-    def get_object(self):
-        return self.model.objects.get(destination__code=self.kwargs.get('code'), year=self.kwargs.get('year'))
-
-    def get_headline(self):
-        return self.headline % self.get_object()
-
-    def get_success_url(self):
-        return self.request.GET.get('volver', reverse('plan_list'))
-
-
-class PlanDelete(StaffRequiredMixin, SetHeadlineMixin, DeleteView):
-    model = models.Plan
-    headline = 'Eliminar plan %s'
-    template_name = 'control/plan_delete.html'
-
-    def get_object(self):
-        return self.model.objects.get(destination__code=self.kwargs.get('code'), year=self.kwargs.get('year'))
-
-    def get_headline(self):
-        return self.headline % self.get_object()
-
-    def get_success_url(self):
-        return self.request.GET.get('volver', reverse('record_list'))
-
-
 class PlanAreaSelector(StaffRequiredMixin, SetHeadlineMixin, FormView):
     form_class = forms.PlanAreaForm
     headline = 'Planficar área'
@@ -255,44 +193,6 @@ class RecordCancel(StaffRequiredMixin, SetHeadlineMixin, DetailView):
         target.status = False
         target.save()
         return redirect(self.request.GET.get('volver', reverse('record_list')))
-
-
-class RecordReset(StaffRequiredMixin, SetHeadlineMixin, DetailView):
-    model = models.Record
-    headline = 'Restablecer registro %s'
-    template_name = 'control/record_reset.html'
-
-    def get_object(self):
-        return self.model.objects.get(yuid=self.kwargs.get('yuid'), date__year=self.kwargs.get('year'))
-
-    def get_headline(self):
-        return self.headline % self.get_object()
-
-    def post(self, request, *args, **kwargs):
-        target = self.get_object()
-        target.status = None
-        target.save()
-        return redirect(self.request.GET.get('volver', reverse('record_list')))
-
-
-class RecordDelete(StaffRequiredMixin, SetHeadlineMixin, DeleteView):
-    model = models.Record
-    headline = 'Eliminar registro %s'
-    template_name = 'control/record_delete.html'
-
-    def get_object(self):
-        return self.model.objects.get(yuid=self.kwargs.get('yuid'), date__year=self.kwargs.get('year'))
-
-    def get_headline(self):
-        return self.headline % self.get_object()
-
-    def get_success_url(self):
-        return self.request.GET.get('volver', reverse('record_list'))
-
-    def post(self, request, *args, **kwargs):
-        if not self.get_object().is_pending:
-            return redirect(self.get_success_url())
-        return super(RecordUpdate, self).post(request, *args, **kwargs)
 
 
 class FundingList(StaffRequiredMixin, SetHeadlineMixin, ListView):
