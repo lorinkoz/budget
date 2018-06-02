@@ -104,8 +104,23 @@ class PlanManager(models.Manager):
 class Plan(models.Model):
 
     PLANS = get_years()
+    MONTHS = (
+        ( 1, 'Enero'),
+        ( 2, 'Febrero'),
+        ( 3, 'Marzo'),
+        ( 4, 'Abril'),
+        ( 5, 'Mayo'),
+        ( 6, 'Junio'),
+        ( 7, 'Julio'),
+        ( 8, 'Agosto'),
+        ( 9, 'Septiembre'),
+        (10, 'Octubre'),
+        (11, 'Noviembre'),
+        (12, 'Diciembre'),
+    )
 
     year = models.PositiveIntegerField(verbose_name='año', choices=PLANS, default=PLANS[0][0], help_text='Año del plan')
+    month = models.PositiveIntegerField(verbose_name='mes', choices=MONTHS, default=MONTHS[0][0], help_text='Mes del plan')
     destination = models.ForeignKey('core.Destination', verbose_name='destino', related_name='plans', help_text='Destino de gasto asociado')
 
     amount = models.DecimalField(verbose_name='plan', max_digits=20, decimal_places=2, default=0, validators=[positive_validator], help_text='Monto del plan')
@@ -115,7 +130,7 @@ class Plan(models.Model):
     class Meta:
         verbose_name = 'plan'
         verbose_name_plural = 'planes'
-        unique_together = ('destination', 'year')
+        unique_together = ('destination', 'year', 'month')
         ordering = ('-year', 'destination')
 
     def __str__(self):

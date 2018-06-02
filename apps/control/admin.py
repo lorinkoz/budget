@@ -30,5 +30,5 @@ class FundingAdmin(admin.ModelAdmin):
 
 @admin.register(models.Plan, site=myadmin)
 class PlanAdmin(admin.ModelAdmin):
-    search_fields = ('year', 'destination__code', 'destination__name')
-    list_display = ('year', 'destination', 'amount')
+    search_fields = ('year', 'month', 'destination__code', 'destination__name')
+    list_display = ('year', 'month', 'destination', 'amount')

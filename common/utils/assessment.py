@@ -53,46 +53,6 @@ def assess_records(records):
     return positive - negative
 
 
-def area_plan_grid(area, year, width):
-    year_range = range(year-width, year+1)
-    bundle = Plan.objects.filter(destination__area=area, year__in=year_range).values('destination', 'year').annotate(sum=Sum('amount'))
-    pregrid = {}
-    for destination in area.destinations.all():
-        matrix = []
-        for y in year_range:
-            matrix.append([0, 0, 0])
-        pregrid[destination.pk] = matrix
-    for item in bundle:
-        pregrid[item['destination']][item['year']-year-1][0] += item['sum']
-    bundle = Record.objects.filter(destination__area=area, plan__in=year_range).exclude(status=False)\
-                .values('destination', 'status', 'concept__positive', 'plan').annotate(sum=Sum('amount'))
-    for item in bundle:
-        sign = 1 if item['concept__positive'] else -1
-        amount = sign * -item['sum']
-        pregrid[item['destination']][item['plan']-year-1][2] += amount
-        if item['status']:
-            pregrid[item['destination']][item['plan']-year-1][1] += amount
-    grid = []
-    ttl = {
-        'destination': 'Total',
-        'data': [],
-    }
-    for y in year_range:
-        ttl['data'].append(RowInfo('', 0, 0, 0))
-    for destination in area.destinations.all():
-        data = {
-            'destination': destination,
-            'data': [],
-        }
-        for i in range(len(pregrid[destination.pk])):
-            row_info = RowInfo('', *pregrid[destination.pk][i])
-            data['data'].append(row_info)
-            ttl['data'][i].expand(row_info)
-        grid.append(data)
-    grid.append(ttl)
-    return grid
-
-
 def assess_area(area, year, month, specific):
     data = {}
     month_filters = _month_filters(year, month, specific)

@@ -1,5 +1,5 @@
 {% extends "base_backend.html" %}
-{% load crispy_forms_filters %}
+{% load money crispy_forms_filters %}
 
 {% block content %}
 <div class="page-header">
@@ -14,42 +14,44 @@
     <table class="table table-striped table-condensed">
         <thead>
             <tr>
-                <th class="col-md-7">Destino</th>
-                {% for r in width_range %}
-                <th class="col-md-1 text-center" colspan="2">{{ year|add:r }}</th>
+                <th>Dest</th>
+                {% for month in months %}
+                <th class="text-center">{{ month.1|slice:":3" }}</th>
                 {% endfor %}
-                <th class="col-md-2"></th>
+                <th class="text-center">Total</th>
             </tr>
         </thead>
         <tbody>
-        {% for row in grid %}
-            <tr {% if forloop.last %}style="font-weight:bold"{% endif %}>
-            {% if forloop.last or row.destination.status %}
-                <td>{{ row.destination }}</td>
+        {% for destination, plan_row in plans %}
+            <tr>
+                <th colspan="14" {% if not destination.status %}style="text-decoration:line-through"{% endif %}>
+                    <small>{{ destination }}</small>
+                </th>
+            </tr>
+            <tr>
+                <th></th>
+                {% for plan in plan_row %}
+                {% if forloop.last %}
+                <th class="text-right">
+                    <p class="form-control-static">
+                        {{ plan|money }}
+                    </p>
+                </th>
                 {% else %}
-                <td><s>{{ row.destination }}</s></td>
-                {% endif %}
-                {% for inner_year in row.data %}
-                <td class="text-right">
-                    {{ inner_year.plan|floatformat:2 }}<br/>
-                    <small>{{ inner_year.book|floatformat:2 }}</small>
-                </td>
                 <td>
-                    <b class="label label-{% if inner_year.book_percent > 100 %}danger{% elif inner_year.book_percent == 0 %}info{% elif inner_year.book_percent < 90 %}warning{% else %}success{% endif %}">
-                        {{ inner_year.book_percent|floatformat:0 }}%
-                    </b>
-                </td>
-                {% if not forloop.parentloop.last and forloop.last %}
-                <td>
-                    <input class="form-control" type="number" name="{{ row.destination.code }}" value="{{ inner_year.plan|safe }}">
+                    <input
+                        class="form-control"
+                        type="number"
+                        name="{{ destination.code }}::{{ forloop.counter }}"
+                        value="{{ plan|default:0 }}"/>
                 </td>
                 {% endif %}
-            {% endfor %}
+                {% endfor %}
             </tr>
         {% endfor %}
         </tbody>
     </table>
-    
+
     <hr/>
     <button type="submit" class="btn btn-primary">Guardar planificación</button>
     <a href="{{ request.GET.volver|default:backurl }}" class="btn btn-default">No hacer cambios en la planificación</a>

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from functools import reduce
 
 from django.db.models import Q, F, Sum
 from django.core.urlresolvers import reverse
@@ -14,7 +15,7 @@ from braces.views import SetHeadlineMixin
 
 from . import models, forms
 from common.mixins import StaffRequiredMixin
-from common.utils.assessment import assess_records, area_plan_grid
+from common.utils.assessment import assess_records
 from apps.core.models import Area
 
 
@@ -44,12 +45,13 @@ class PlanArea(StaffRequiredMixin, TemplateView):
 
     def post(self, request, *args, **kwargs):
         for destination in self.area.destinations.order_by('-status','element__code'):
-            plan, created = models.Plan.objects.get_or_create(year=self.year, destination=destination)
-            try:
-                plan.amount = float(request.POST.get(destination.code))
-                plan.save()
-            except:
-                pass
+            for month in range(1, 13):
+                plan, created = models.Plan.objects.get_or_create(year=self.year, month=month, destination=destination)
+                try:
+                    plan.amount = max(0, float(request.POST.get('%s::%s' % (destination.code, month))))
+                    plan.save()
+                except:
+                    pass
         if self.year == timezone.now().year:
             deactivate = [x.pk for x in self.area.destinations.filter(plans__year=self.year).distinct().annotate(plan=Sum('plans__amount')).filter(plan=0)]
             self.area.destinations.exclude(pk__in=deactivate).update(status=True)
@@ -59,13 +61,16 @@ class PlanArea(StaffRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(PlanArea, self).get_context_data(**kwargs)
-        width = 2
+        plans = []
+        for destination in self.area.destinations.all():
+            dicto = {x.month: x.amount for x in destination.plans.filter(year=self.year)}
+            sum = reduce(lambda t, p: t + p, dicto.values(), 0)
+            plans.append((destination, [dicto.get(x, 0) for x in range(1, 13)] + [sum]))
         context['year'] = self.year
         context['area'] = self.area
         context['headline'] = self.headline
-        context['width'] = width
-        context['width_range'] = range(-width, 1)
-        context['grid'] = area_plan_grid(self.area, self.year, width)
+        context['plans'] = plans
+        context['months'] = models.Plan.MONTHS
         return context
 
 
