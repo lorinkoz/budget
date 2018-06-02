@@ -22,6 +22,8 @@ USE_TZ = True
 LANGUAGE_CODE = 'es'
 TIME_ZONE = 'America/Havana'
 
+DATE_INPUT_FORMATS = ['%d/%m/%Y', '%d/%m/%y', '%Y-%m-%d']
+
 
 INSTALLED_APPS = (
     'django.contrib.contenttypes',
