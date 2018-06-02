@@ -33,12 +33,13 @@ class BackendDashboard(StaffRequiredMixin, SetHeadlineMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super(BackendDashboard, self).get_context_data(**kwargs)
         this_year = timezone.now().year
+        this_month = timezone.now().month
         # Begin: no plan areas
         area_data = assess_areas(this_year, 12, False)
         area_data.pop()
         no_plan_areas = len(filter(lambda x: x.plan == 0 and x.book > 0, area_data))
         # End: no plan areas
-        overdrawns = len(assess_overdrawns(this_year))-1
+        overdrawns = len(assess_overdrawns(this_year, this_month, False))-1
         stats = {
             'pending_records': Record.objects.filter(status=None).count(),
             'no_plan_areas': no_plan_areas,
@@ -55,5 +56,5 @@ class FrontendDashboard(ConsultorRequiredMixin, SetHeadlineMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(FrontendDashboard, self).get_context_data(**kwargs)
-        
+
         return context

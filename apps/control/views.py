@@ -57,7 +57,7 @@ class PlanArea(StaffRequiredMixin, TemplateView):
             self.area.destinations.exclude(pk__in=deactivate).update(status=True)
             self.area.destinations.filter(pk__in=deactivate).update(status=False)
         self.area.reorganize_destinations()
-        return redirect('plan_area', self.area.slug, self.kwargs['year'])
+        return redirect(request.GET.get('volver', reverse('plan_area', args=[self.area.slug, self.kwargs['year']])))
 
     def get_context_data(self, **kwargs):
         context = super(PlanArea, self).get_context_data(**kwargs)

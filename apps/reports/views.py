@@ -136,7 +136,9 @@ class OverdrawnsReport(StaffRequiredMixin, SetHeadlineMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(OverdrawnsReport, self).get_context_data(**kwargs)
-        this_year = timezone.now().year
-        context['year'] = this_year
-        context['data'] = assessment.assess_overdrawns(this_year)
+        filter_form = forms.ReportFilterForm(self.request.GET)
+        year, month, specific = filter_form.get_data()
+        context['year'] = year
+        context['data'] = assessment.assess_overdrawns(year, month, specific)
+        context['filter'] = filter_form
         return context

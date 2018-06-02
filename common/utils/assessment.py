@@ -34,17 +34,24 @@ class RowInfo:
         self._calculate_values()
 
 
-def _month_filters(year, month, specific):
+def _record_filter(year, month, specific):
     month = int(month)
-    month_filter = Q(date__month=month)
+    filter = Q(date__month=month)
     if not specific:
         for i in range(1, month):
-            month_filter |= Q(date__month=month-i)
-    month_filter = Q(date__year=year, plan=year)&(month_filter)
+            filter |= Q(date__month=month-i)
+    filter = Q(date__year=year, plan=year)&(filter)
     # If December and not specific, add any other records out of the year's scope
     if month == 12 and not specific:
-        month_filter = Q(plan=year)
-    return month_filter
+        filter = Q(plan=year)
+    return filter
+
+
+def _plan_filter(year, month, specific):
+    month = int(month)
+    filter = Q(year=year)
+    filter &= Q(month=month) if specific else Q(month__lte=month)
+    return filter
 
 
 def assess_records(records):
@@ -55,13 +62,15 @@ def assess_records(records):
 
 def assess_area(area, year, month, specific):
     data = {}
-    month_filters = _month_filters(year, month, specific)
-    for destination in area.destinations.filter(plans__year=year).annotate(plan=Sum('plans__amount')):
+    record_filter = _record_filter(year, month, specific)
+    plan_filter = _plan_filter(year, month, specific)
+    for destination in area.destinations.filter(plans__year=year):
         data[destination.pk] = [0, 0, 0]
-        data[destination.pk][0] = destination.plan
-    bundle = Record.objects.filter(destination__area=area).exclude(status=False).filter(month_filters) \
-                .values('destination','status','concept__positive') \
-                .annotate(sum=Sum('amount'))
+        data[destination.pk][0] = Plan.objects.filter(plan_filter, destination=destination)\
+            .aggregate(sum=Sum('amount'))['sum'] or 0
+    bundle = Record.objects.filter(destination__area=area).exclude(status=False).filter(record_filter)\
+        .values('destination', 'status', 'concept__positive')\
+        .annotate(sum=Sum('amount'))
     for item in bundle:
         sign = 1 if item['concept__positive'] else -1
         amount = sign * -item['sum']
@@ -86,13 +95,15 @@ def assess_area(area, year, month, specific):
 
 def assess_areas(year, month, specific):
     data = {}
-    month_filters = _month_filters(year, month, specific)
-    for area in Area.objects.filter(destinations__plans__year=year).annotate(plan=Sum('destinations__plans__amount')):
+    record_filter = _record_filter(year, month, specific)
+    plan_filter = _plan_filter(year, month, specific)
+    for area in Area.objects.filter(destinations__plans__year=year):
         data[area.pk] = [0, 0, 0]
-        data[area.pk][0] = area.plan
-    bundle = Record.objects.exclude(status=False).filter(month_filters) \
-                .values('destination__area', 'status', 'concept__positive') \
-                .annotate(sum=Sum('amount'))
+        data[area.pk][0] = Plan.objects.filter(plan_filter, destination__area=area)\
+            .aggregate(sum=Sum('amount'))['sum'] or 0
+    bundle = Record.objects.exclude(status=False).filter(record_filter)\
+        .values('destination__area', 'status', 'concept__positive')\
+        .annotate(sum=Sum('amount'))
     for item in bundle:
         sign = 1 if item['concept__positive'] else -1
         amount = sign * -item['sum']
@@ -140,15 +151,18 @@ def _get_elements_tree():
 
 def assess_element(element, year, month, specific):
     data = {}
-    month_filters = _month_filters(year, month, specific)
+    record_filter = _record_filter(year, month, specific)
+    plan_filter = _plan_filter(year, month, specific)
     tree = _get_elements_tree()
     for area in Area.objects.filter(destinations__plans__year=year).all():
         data[area.pk] = [0, 0, 0]
-        data[area.pk][0] = Plan.objects.filter(year=year, destination__area=area, destination__element__in=tree[element.pk]['scope'])\
-            .aggregate(plan=Sum('amount')).get('plan', 0) or 0
-    bundle = Record.objects.exclude(status=False).filter(destination__element__in=tree[element.pk]['scope']).filter(month_filters)\
-                .values('destination__area', 'status', 'concept__positive') \
-                .annotate(sum=Sum('amount'))
+        data[area.pk][0] = Plan.objects\
+            .filter(plan_filter, destination__area=area, destination__element__in=tree[element.pk]['scope'])\
+            .aggregate(sum=Sum('amount'))['sum'] or 0
+    bundle = Record.objects.exclude(status=False)\
+        .filter(destination__element__in=tree[element.pk]['scope']).filter(record_filter)\
+        .values('destination__area', 'status', 'concept__positive')\
+        .annotate(sum=Sum('amount'))
     for item in bundle:
         sign = 1 if item['concept__positive'] else -1
         amount = sign * -item['sum']
@@ -173,16 +187,17 @@ def assess_element(element, year, month, specific):
 
 
 def assess_elements(year, month, specific):
-    month_filters = _month_filters(year, month, specific)
+    record_filter = _record_filter(year, month, specific)
+    plan_filter = _plan_filter(year, month, specific)
     tree = _get_elements_tree()
     elements = {}
-    bundle = Plan.objects.filter(year=year).values('destination__element').annotate(sum=Sum('amount'))
+    bundle = Plan.objects.filter(plan_filter).values('destination__element').annotate(sum=Sum('amount'))
     for item in bundle:
         if item['destination__element'] not in elements:
             elements[item['destination__element']] = [0, 0, 0]
         elements[item['destination__element']][0] += item['sum']
-    bundle = Record.objects.filter(plan=year).exclude(status=False).filter(month_filters) \
-                .values('destination__element', 'status', 'concept__positive').annotate(sum=Sum('amount'))
+    bundle = Record.objects.filter(plan=year).exclude(status=False).filter(record_filter)\
+        .values('destination__element', 'status', 'concept__positive').annotate(sum=Sum('amount'))
     for item in bundle:
         if item['destination__element'] not in elements:
             elements[item['destination__element']] = [0, 0, 0]
@@ -236,10 +251,12 @@ def assess_availability(target_year=None, currency=None):
             funding = funding.filter(date__year=target_year)
         funding = funding.aggregate(sum=Sum('amount'))['sum'] or 0
         elements[element.pk][0] = funding
-        records = Record.objects.filter(destination__element__pk__in=tree[element.pk]['scope'], **extra).exclude(status=False)
+        records = Record.objects\
+            .filter(destination__element__pk__in=tree[element.pk]['scope'], **extra)\
+            .exclude(status=False)
         if target_year:
             records = records.filter(date__year=target_year)
-        bundle =  records.values('status','concept__positive').annotate(sum=Sum('amount'))
+        bundle =  records.values('status', 'concept__positive').annotate(sum=Sum('amount'))
         for item in bundle:
             sign = 1 if item['concept__positive'] else -1
             amount = sign * -item['sum']
@@ -259,14 +276,17 @@ def assess_availability(target_year=None, currency=None):
     return results
 
 
-def assess_overdrawns(year):
+def assess_overdrawns(year, month, specific):
     data = {}
-    for destination in Destination.objects.filter(status=True, plans__year=year).annotate(plan=Sum('plans__amount')):
+    record_filter = _record_filter(year, month, specific)
+    plan_filter = _plan_filter(year, month, specific)
+    for destination in Destination.objects.filter(status=True, plans__year=year):
         data[destination.pk] = [0, 0, 0]
-        data[destination.pk][0] = destination.plan
-    bundle = Record.objects.filter(plan=year).exclude(status=False) \
-                .values('destination','status','concept__positive') \
-                .annotate(sum=Sum('amount'))
+        data[destination.pk][0] = Plan.objects.filter(plan_filter, destination=destination)\
+            .aggregate(sum=Sum('amount'))['sum'] or 0
+    bundle = Record.objects.filter(record_filter).exclude(status=False)\
+        .values('destination', 'status', 'concept__positive')\
+        .annotate(sum=Sum('amount'))
     for item in bundle:
         if item['destination'] not in data:
             data[item['destination']] = [0, 0, 0]
@@ -279,7 +299,7 @@ def assess_overdrawns(year):
     ttl_plan = 0
     ttl_bank = 0
     ttl_book = 0
-    for destination in Destination.objects.filter(status=True, plans__year=year).select_related('area'):
+    for destination in Destination.objects.filter(status=True, plans__year=year).select_related('area').distinct():
         extra = {'area': destination.area }
         row_info = RowInfo(destination, *data[destination.pk], **extra)
         if row_info.available < 0:
