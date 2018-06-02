@@ -16,7 +16,7 @@ MANAGERS = ADMINS
 
 
 USE_I18N = True
-USE_L10N = True
+USE_L10N = False
 USE_TZ = True
 
 LANGUAGE_CODE = 'es'
@@ -46,9 +46,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'common.middleware.standard.ContextCompletionMiddleware',
-    # 'common.middleware.ContextCompletionMiddleware',
-    # 'common.middleware.FormDoubleSubmitProtectionMiddleware',
 )
 
 AUTH_USER_MODEL = 'users.User'
@@ -73,11 +70,8 @@ LOCALE_PATHS = (
 TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.auth.context_processors.auth",
     "django.core.context_processors.debug",
-    # "django.core.context_processors.i18n",
-    # "django.core.context_processors.media",
     "django.core.context_processors.static",
     "django.core.context_processors.tz",
-    # "django.contrib.messages.context_processors.messages",
     "django.core.context_processors.request",
     "common.context_processors.constants",
 )
