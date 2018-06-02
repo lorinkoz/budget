@@ -90,7 +90,7 @@ class Destination(ModelWithCodeName, ModelWithStatus):
         verbose_name_plural = 'destinos de gasto'
 
     @property
-    def friendly_name(self):
+    def display_name(self):
         return '%s (%s)' % (self.name, self.area.name)
 
 

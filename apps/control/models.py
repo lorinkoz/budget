@@ -49,7 +49,7 @@ class ModelWithYUID(models.Model):
             self.yuid = reference.yuid + 1 if reference else 1
 
     @property
-    def html_id(self):
+    def display_id(self):
         return '%s-%s' % (self.yuid, self.date.year)
 
 
@@ -85,9 +85,6 @@ class Record(ModelWithYUID):
     def is_pending(self):
         return self.status == None
 
-    # def get_absolute_url(self):
-        # return ('record_edit', [self.date.year, self.yuid])
-
 
 class Funding(ModelWithYUID):
 
@@ -96,11 +93,6 @@ class Funding(ModelWithYUID):
     class Meta(ModelWithYUID.Meta):
         verbose_name = 'asignación de fondos'
         verbose_name_plural = 'asignaciones de fondos'
-
-
-# @receiver(post_save, sender=Record)
-# def auto_create_plan(sender, instance, created, **kwargs):
-#     Plan.objects.get_or_create(year=instance.plan, destination=instance.destination)
 
 
 class PlanManager(models.Manager):
@@ -127,11 +119,11 @@ class Plan(models.Model):
         ordering = ('-year', 'destination')
 
     def __str__(self):
-        return '%s / %s ' % (self.year, self.destination.friendly_name)
+        return '%s / %s ' % (self.year, self.destination.display_name)
 
     def natural_key(self):
         return (self.year, self.destination.code)
 
     @property
-    def html_id(self):
+    def display_id(self):
         return '%s-%s' % (self.year, self.destination.code)

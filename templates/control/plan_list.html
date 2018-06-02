@@ -32,7 +32,7 @@
     </thead>
     <tbody>
     {% for plan in object_list %}
-        <tr id="{{ plan.html_id }}">
+        <tr id="{{ plan.display_id }}">
             <td>
                 {{ plan.year }}
             </td>
@@ -40,8 +40,8 @@
                 {{ plan.destination.name }}<br/>
                 <small>{{ plan.destination.area.name }}</small><br/>
                 <small class="actions">
-                    <a href="{% url 'plan_update' plan.year plan.destination.code %}?volver={{ request.get_full_path|add:'#'|add:plan.html_id|urlencode }}">Editar</a>
-                    <a href="{% url 'plan_delete' plan.year plan.destination.code %}?volver={{ request.get_full_path|add:'#'|add:plan.html_id|urlencode }}">Eliminar</a>
+                    <a href="{% url 'plan_update' plan.year plan.destination.code %}?volver={{ request.get_full_path|add:'#'|add:plan.display_id|urlencode }}">Editar</a>
+                    <a href="{% url 'plan_delete' plan.year plan.destination.code %}?volver={{ request.get_full_path|add:'#'|add:plan.display_id|urlencode }}">Eliminar</a>
                 </small>
             </td>
             <td>

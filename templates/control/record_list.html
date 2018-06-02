@@ -46,7 +46,7 @@
     </thead>
     <tbody>
     {% for record in object_list %}
-        <tr id="{{ record.html_id }}">
+        <tr id="{{ record.display_id }}">
             <td>
                 {{ record.yuid }}<br/>
                 <small>{{ record.date|date:"d/m/y" }}</small><br/>
@@ -62,10 +62,10 @@
                 <small>{{ record.get_status_display }}</small><br/>
                 {% if record.is_pending %}
                 <small class="actions">
-                    <a href="{% url 'record_update' record.date.year record.yuid %}?volver={{ request.get_full_path|add:'#'|add:record.html_id|urlencode }}">Editar</a>
-                    <a href="{% url 'record_confirm' record.date.year record.yuid %}?volver={{ request.get_full_path|add:'#'|add:record.html_id|urlencode }}">Confirmar</a>
-                    <a href="{% url 'record_cancel' record.date.year record.yuid %}?volver={{ request.get_full_path|add:'#'|add:record.html_id|urlencode }}">Cancelar</a>
-                    {# <a href="{% url 'record_delete' record.date.year record.yuid %}?volver={{ request.get_full_path|add:'#'|add:record.html_id|urlencode }}">Eliminar</a> #}
+                    <a href="{% url 'record_update' record.date.year record.yuid %}?volver={{ request.get_full_path|add:'#'|add:record.display_id|urlencode }}">Editar</a>
+                    <a href="{% url 'record_confirm' record.date.year record.yuid %}?volver={{ request.get_full_path|add:'#'|add:record.display_id|urlencode }}">Confirmar</a>
+                    <a href="{% url 'record_cancel' record.date.year record.yuid %}?volver={{ request.get_full_path|add:'#'|add:record.display_id|urlencode }}">Cancelar</a>
+                    {# <a href="{% url 'record_delete' record.date.year record.yuid %}?volver={{ request.get_full_path|add:'#'|add:record.display_id|urlencode }}">Eliminar</a> #}
                 </small>
                 {% endif %}
             </td>

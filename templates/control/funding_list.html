@@ -34,7 +34,7 @@
     </thead>
     <tbody>
     {% for funding in object_list %}
-        <tr id="{{ funding.html_id }}">
+        <tr id="{{ funding.display_id }}">
             <td>
                 {{ funding.yuid }}<br/>
                 <small>{{ funding.date|date:"d/m/y" }}</small>
@@ -43,8 +43,8 @@
                 {{ funding.element }}<br/>
                 <small class="text-muted">{{ funding.description|default:"No se especificaron más detalles" }}</small><br/>
                 <small class="actions">
-                    <a href="{% url 'funding_update' funding.date.year funding.yuid %}?volver={{ request.get_full_path|add:'#'|add:funding.html_id|urlencode }}">Editar</a>
-                    <a href="{% url 'funding_delete' funding.date.year funding.yuid %}?volver={{ request.get_full_path|add:'#'|add:funding.html_id|urlencode }}">Eliminar</a>
+                    <a href="{% url 'funding_update' funding.date.year funding.yuid %}?volver={{ request.get_full_path|add:'#'|add:funding.display_id|urlencode }}">Editar</a>
+                    <a href="{% url 'funding_delete' funding.date.year funding.yuid %}?volver={{ request.get_full_path|add:'#'|add:funding.display_id|urlencode }}">Eliminar</a>
                 </small>
             </td>
             <td class="text-right">

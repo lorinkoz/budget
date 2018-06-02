@@ -16,7 +16,7 @@
     </thead>
     <tbody>
     {% for record in object_list %}
-        <tr id="{{ record.html_id }}">
+        <tr id="{{ record.display_id }}">
             <td>
                 {{ record.yuid }}<br/>
                 <small>{{ record.date|date:"d/m/y" }}</small><br/>
