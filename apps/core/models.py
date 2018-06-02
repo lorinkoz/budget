@@ -20,17 +20,17 @@ class CodeManager(models.Manager):
 
 
 @python_2_unicode_compatible
-class CodeNamedModel(models.Model):
-    
+class ModelWithCodeName(models.Model):
+
     code = models.CharField(verbose_name='código', max_length=CODE_LENGTH, validators=[code_validator], help_text='Código único asociado')
     name = models.CharField(verbose_name='nombre', max_length=NAME_LENGTH, help_text='Nombre asociado')
 
     objects = CodeManager()
-    
+
     class Meta:
         abstract = True
         ordering = ('code', 'name')
-    
+
     def __str__(self):
         return FORMAT % (self.code, self.name)
 
@@ -38,24 +38,24 @@ class CodeNamedModel(models.Model):
         return (self.code,)
 
 
-class DeactivableModel(models.Model):
-    
+class ModelWithStatus(models.Model):
+
     STATUS = (
         (True, 'Activo'),
         (False, 'Inactivo'),
     )
-    
+
     status = models.BooleanField(verbose_name='estado', choices=STATUS, default=True, help_text='Estado en el sistema')
-    
+
     class Meta:
         abstract = True
 
 
-class Area(CodeNamedModel):
-    
+class Area(ModelWithCodeName):
+
     slug = snippets.AutoSlugField(verbose_name='slug', populate_from='name', overwrite=True)
 
-    class Meta(CodeNamedModel.Meta):
+    class Meta(ModelWithCodeName.Meta):
         verbose_name = 'área'
         verbose_name_plural = 'áreas'
 
@@ -67,42 +67,42 @@ class Area(CodeNamedModel):
             k += 1
 
 
-class Element(CodeNamedModel):
-    
+class Element(ModelWithCodeName):
+
     parent = models.ForeignKey('self', verbose_name='elemento padre', null=True, blank=True, related_name='subelements', on_delete=models.SET_NULL, help_text='Elemento padre')
-    
-    class Meta(CodeNamedModel.Meta):
+
+    class Meta(ModelWithCodeName.Meta):
         verbose_name = 'elemento de gasto'
         verbose_name_plural = 'elementos de gasto'
-    
+
     @property
     def creditable(self):
         return self.parent is None
 
 
-class Destination(CodeNamedModel, DeactivableModel):
-    
+class Destination(ModelWithCodeName, ModelWithStatus):
+
     area = models.ForeignKey('Area', verbose_name='area', related_name='destinations', help_text='Área a la que pertenece este destino de gasto')
     element = models.ForeignKey('Element', verbose_name='elemento de gasto', blank=True, null=True, related_name='destinations', on_delete=models.SET_NULL, help_text='Elemento de gasto al que pertenece este destino de gasto')
-    
-    class Meta(CodeNamedModel.Meta):
+
+    class Meta(ModelWithCodeName.Meta):
         verbose_name = 'destino de gasto'
         verbose_name_plural = 'destinos de gasto'
-    
+
     @property
     def friendly_name(self):
         return '%s (%s)' % (self.name, self.area.name)
 
 
-class Concept(CodeNamedModel, DeactivableModel):
-    
+class Concept(ModelWithCodeName, ModelWithStatus):
+
     OPERATIONS = (
         (True, 'Crédito'),
         (False, 'Débito'),
     )
-    
+
     positive = models.BooleanField('tipo de operación', choices=OPERATIONS, default=True, help_text='Tipo de operación del concepto')
-    
-    class Meta(CodeNamedModel.Meta):
+
+    class Meta(ModelWithCodeName.Meta):
         verbose_name = 'concepto'
         verbose_name_plural = 'conceptos'

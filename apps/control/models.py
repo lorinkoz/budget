@@ -16,7 +16,7 @@ class YUIDManager(models.Manager):
 
 
 @python_2_unicode_compatible
-class YUIDModel(models.Model):
+class ModelWithYUID(models.Model):
 
     yuid = models.PositiveIntegerField(verbose_name='registro', unique_for_year='date', help_text='Identificador único en el año')
     date = models.DateField(verbose_name='fecha', help_text='Fecha de emisión')
@@ -53,7 +53,7 @@ class YUIDModel(models.Model):
         return '%s-%s' % (self.yuid, self.date.year)
 
 
-class Record(YUIDModel):
+class Record(ModelWithYUID):
 
     STATUS = (
         (None, 'Pendiente'),
@@ -69,7 +69,7 @@ class Record(YUIDModel):
 
     status = models.NullBooleanField(verbose_name='estado', default=None, choices=STATUS, help_text='Estado del registro')
 
-    class Meta(YUIDModel.Meta):
+    class Meta(ModelWithYUID.Meta):
         verbose_name = 'registro'
         verbose_name_plural = 'registros'
 
@@ -89,11 +89,11 @@ class Record(YUIDModel):
         # return ('record_edit', [self.date.year, self.yuid])
 
 
-class Funding(YUIDModel):
+class Funding(ModelWithYUID):
 
     element = models.ForeignKey('core.Element', verbose_name='elemento de gasto', related_name='fundings', limit_choices_to = {'parent': None}, help_text='Elemento de gasto al que esta asignación acredita')
 
-    class Meta(YUIDModel.Meta):
+    class Meta(ModelWithYUID.Meta):
         verbose_name = 'asignación de fondos'
         verbose_name_plural = 'asignaciones de fondos'
 
