@@ -42,6 +42,7 @@
                     <input
                         class="form-control"
                         type="number"
+                        step="0.01"
                         name="{{ destination.code }}::{{ forloop.counter }}"
                         value="{{ plan|default:0 }}"/>
                 </td>
