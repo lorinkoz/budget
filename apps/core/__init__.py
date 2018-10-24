@@ -5,10 +5,8 @@ from django.apps import AppConfig
 
 
 class CustomAppConfig(AppConfig):
-    name = 'apps.core'
-    verbose_name = 'Núcleo'
-
-default_app_config = 'apps.core.CustomAppConfig'
+    name = "apps.core"
+    verbose_name = "Núcleo"
 
 
-
+default_app_config = "apps.core.CustomAppConfig"

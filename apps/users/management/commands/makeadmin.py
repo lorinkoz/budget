@@ -7,10 +7,9 @@ from apps.users.models import User
 
 
 class Command(BaseCommand):
-    
     def handle(self, *args, **options):
         try:
-            User.objects.create_superuser('admin@localhost', 'Administrador', 'admin')
-            self.stdout.write('Admin created!')
+            User.objects.create_superuser("admin@localhost", "Administrador", "admin")
+            self.stdout.write("Admin created!")
         except:
-            self.stdout.write('Admin exists already!')
+            self.stdout.write("Admin exists already!")

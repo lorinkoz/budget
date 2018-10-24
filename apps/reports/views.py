@@ -16,34 +16,34 @@ from apps.core.models import Area, Element
 
 
 class AreaSummary(StaffRequiredMixin, SetHeadlineMixin, TemplateView):
-    headline = 'Resumen por áreas'
-    template_name = 'reports/area_summary.html'
+    headline = "Resumen por áreas"
+    template_name = "reports/area_summary.html"
 
     def get_context_data(self, **kwargs):
         context = super(AreaSummary, self).get_context_data(**kwargs)
         filter_form = forms.ReportFilterForm(self.request.GET)
         year, month, specific = filter_form.get_data()
-        context['year'] = year
-        context['data'] = assessment.assess_areas(year, month, specific)
-        context['filter'] = filter_form
+        context["year"] = year
+        context["data"] = assessment.assess_areas(year, month, specific)
+        context["filter"] = filter_form
         return context
 
 
 class AreaNoPlanSummary(StaffRequiredMixin, SetHeadlineMixin, TemplateView):
-    headline = 'Areas sin planificar'
-    template_name = 'reports/area_noplan_summary.html'
+    headline = "Areas sin planificar"
+    template_name = "reports/area_noplan_summary.html"
 
     def get_context_data(self, **kwargs):
         context = super(AreaNoPlanSummary, self).get_context_data(**kwargs)
         data = assessment.assess_areas(timezone.now().year, 12, False)
         data.pop()
-        context['data'] = filter(lambda x: x.plan == 0 and x.book > 0, data)
+        context["data"] = filter(lambda x: x.plan == 0 and x.book > 0, data)
         return context
 
 
 class AreaDetailed(StaffRequiredMixin, SetHeadlineMixin, DetailView):
     model = Area
-    template_name = 'reports/area_detailed.html'
+    template_name = "reports/area_detailed.html"
 
     def get_headline(self):
         return self.get_object().name
@@ -52,15 +52,15 @@ class AreaDetailed(StaffRequiredMixin, SetHeadlineMixin, DetailView):
         context = super(AreaDetailed, self).get_context_data(**kwargs)
         filter_form = forms.ReportFilterForm(self.request.GET)
         year, month, specific = filter_form.get_data()
-        context['year'] = year
-        context['data'] = assessment.assess_area(self.get_object(), year, month, specific)
-        context['filter'] = filter_form
+        context["year"] = year
+        context["data"] = assessment.assess_area(self.get_object(), year, month, specific)
+        context["filter"] = filter_form
         return context
 
 
 class AreaConsultor(ConsultorRequiredMixin, SetHeadlineMixin, DetailView):
     model = Area
-    template_name = 'reports/area_consultor.html'
+    template_name = "reports/area_consultor.html"
 
     def get_headline(self):
         return self.get_object().name
@@ -73,32 +73,32 @@ class AreaConsultor(ConsultorRequiredMixin, SetHeadlineMixin, DetailView):
         context = super(AreaConsultor, self).get_context_data(**kwargs)
         filter_form = forms.ReportFilterForm(self.request.GET)
         year, month, specific = filter_form.get_data()
-        context['year'] = year
-        context['data'] = assessment.assess_area(self.get_object(), year, month, specific)
-        context['filter'] = filter_form
+        context["year"] = year
+        context["data"] = assessment.assess_area(self.get_object(), year, month, specific)
+        context["filter"] = filter_form
         return context
 
 
 class ElementSummary(StaffRequiredMixin, SetHeadlineMixin, TemplateView):
-    headline = 'Resumen por elemento de gasto'
-    template_name = 'reports/element_summary.html'
+    headline = "Resumen por elemento de gasto"
+    template_name = "reports/element_summary.html"
 
     def get_context_data(self, **kwargs):
         context = super(ElementSummary, self).get_context_data(**kwargs)
         filter_form = forms.ReportFilterForm(self.request.GET)
         year, month, specific = filter_form.get_data()
-        context['year'] = year
-        context['data'] = assessment.assess_elements(year, month, specific)
-        context['filter'] = filter_form
+        context["year"] = year
+        context["data"] = assessment.assess_elements(year, month, specific)
+        context["filter"] = filter_form
         return context
 
 
 class ElementDetailed(StaffRequiredMixin, SetHeadlineMixin, DetailView):
     model = Element
-    template_name = 'reports/element_detailed.html'
+    template_name = "reports/element_detailed.html"
 
     def get_object(self):
-        return get_object_or_404(self.model, code=self.kwargs['code'])
+        return get_object_or_404(self.model, code=self.kwargs["code"])
 
     def get_headline(self):
         return self.get_object().name
@@ -107,38 +107,37 @@ class ElementDetailed(StaffRequiredMixin, SetHeadlineMixin, DetailView):
         context = super(ElementDetailed, self).get_context_data(**kwargs)
         filter_form = forms.ReportFilterForm(self.request.GET)
         year, month, specific = filter_form.get_data()
-        context['year'] = year
-        context['data'] = assessment.assess_element(self.get_object(), year, month, specific)
-        context['filter'] = filter_form
+        context["year"] = year
+        context["data"] = assessment.assess_element(self.get_object(), year, month, specific)
+        context["filter"] = filter_form
         return context
 
 
 class AvailabilityReport(StaffRequiredMixin, SetHeadlineMixin, TemplateView):
-    headline = 'Disponibilidad de fondos'
-    template_name = 'reports/availability.html'
+    headline = "Disponibilidad de fondos"
+    template_name = "reports/availability.html"
 
     def get_context_data(self, **kwargs):
         context = super(AvailabilityReport, self).get_context_data(**kwargs)
         filter_form = forms.YearFilterForm(self.request.GET)
         year = filter_form.get_year()
-        context['year'] = year
-        context['grouped_data'] = [
-            (currency, assessment.assess_availability(year, code))
-            for code, currency in CURRENCIES
+        context["year"] = year
+        context["grouped_data"] = [
+            (currency, assessment.assess_availability(year, code)) for code, currency in CURRENCIES
         ]
-        context['filter'] = filter_form
+        context["filter"] = filter_form
         return context
 
 
 class OverdrawnsReport(StaffRequiredMixin, SetHeadlineMixin, TemplateView):
-    headline = 'Destinos sobregirados'
-    template_name = 'reports/overdrawns.html'
+    headline = "Destinos sobregirados"
+    template_name = "reports/overdrawns.html"
 
     def get_context_data(self, **kwargs):
         context = super(OverdrawnsReport, self).get_context_data(**kwargs)
         filter_form = forms.ReportFilterForm(self.request.GET)
         year, month, specific = filter_form.get_data()
-        context['year'] = year
-        context['data'] = assessment.assess_overdrawns(year, month, specific)
-        context['filter'] = filter_form
+        context["year"] = year
+        context["data"] = assessment.assess_overdrawns(year, month, specific)
+        context["filter"] = filter_form
         return context

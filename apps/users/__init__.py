@@ -5,10 +5,8 @@ from django.apps import AppConfig
 
 
 class CustomAppConfig(AppConfig):
-    name = 'apps.users'
-    verbose_name = 'Usuarios'
-
-default_app_config = 'apps.users.CustomAppConfig'
+    name = "apps.users"
+    verbose_name = "Usuarios"
 
 
-
+default_app_config = "apps.users.CustomAppConfig"

@@ -2,7 +2,4 @@
 from __future__ import unicode_literals
 
 
-CURRENCIES = (
-    ('cup', 'CUP'),
-    ('cuc', 'CUC'),
-)
+CURRENCIES = (("cup", "CUP"), ("cuc", "CUC"))

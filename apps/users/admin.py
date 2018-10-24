@@ -19,16 +19,14 @@ class UserAdmin(DefaultUserAdmin):
     inlines = (AreaAuthorityInline,)
     form = forms.AdminUserChangeForm
     add_form = forms.AdminUserCreationForm
-    list_display = ('email', 'display_name', 'role',)
-    search_fields = ('email',)
-    ordering = ('email',)
+    list_display = ("email", "display_name", "role")
+    search_fields = ("email",)
+    ordering = ("email",)
     filter_horizontal = ()
     list_filter = ()
     fieldsets = (
-        ('Información básica', {'fields': ('email', 'display_name')}),
-        ('Información de seguridad', {'fields': ('password', 'role')}),
-        ('Otros datos', {'fields': ('default_currency',)}),
+        ("Información básica", {"fields": ("email", "display_name")}),
+        ("Información de seguridad", {"fields": ("password", "role")}),
+        ("Otros datos", {"fields": ("default_currency",)}),
     )
-    add_fieldsets = (
-        (None, {'fields': ('email', 'password1', 'password2')}),
-    )
+    add_fieldsets = ((None, {"fields": ("email", "password1", "password2")}),)

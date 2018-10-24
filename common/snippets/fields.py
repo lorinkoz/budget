@@ -8,25 +8,24 @@ from django.utils.text import slugify
 
 
 class AutoSlugField(SlugField):
-    
     def __init__(self, *args, **kwargs):
-        kwargs.setdefault('blank', True)
-        kwargs.setdefault('editable', False)
+        kwargs.setdefault("blank", True)
+        kwargs.setdefault("editable", False)
 
-        populate_from = kwargs.pop('populate_from', None)
+        populate_from = kwargs.pop("populate_from", None)
         if populate_from is None:
             raise ValueError("missing 'populate_from' argument")
         else:
             self._populate_from = populate_from
-        self.separator = kwargs.pop('separator', '-')
-        self.overwrite = kwargs.pop('overwrite', False)
-        self.allow_duplicates = kwargs.pop('allow_duplicates', False)
+        self.separator = kwargs.pop("separator", "-")
+        self.overwrite = kwargs.pop("overwrite", False)
+        self.allow_duplicates = kwargs.pop("allow_duplicates", False)
         super(AutoSlugField, self).__init__(*args, **kwargs)
 
     def _slug_strip(self, value):
-        re_sep = '(?:-|%s)' % re.escape(self.separator)
-        value = re.sub('%s+' % re_sep, self.separator, value)
-        return re.sub(r'^%s+|%s+$' % (re_sep, re_sep), '', value)
+        re_sep = "(?:-|%s)" % re.escape(self.separator)
+        value = re.sub("%s+" % re_sep, self.separator, value)
+        return re.sub(r"^%s+|%s+$" % (re_sep, re_sep), "", value)
 
     def get_queryset(self, model_cls, slug_field):
         for field, model in model_cls._meta.get_fields_with_model():
@@ -37,12 +36,12 @@ class AutoSlugField(SlugField):
     def slugify_func(self, content):
         if content:
             return slugify(content)
-        return ''
+        return ""
 
     def create_slug(self, model_instance, add):
         # get fields to populate from and slug field to set
         if not isinstance(self._populate_from, (list, tuple)):
-            self._populate_from = (self._populate_from, )
+            self._populate_from = (self._populate_from,)
         slug_field = model_instance._meta.get_field(self.attname)
 
         if add or self.overwrite:
@@ -86,12 +85,12 @@ class AutoSlugField(SlugField):
         # depending on the given slug, clean-up
         while not slug or queryset.filter(**kwargs):
             slug = original_slug
-            end = '%s%s' % (self.separator, next)
+            end = "%s%s" % (self.separator, next)
             end_len = len(end)
             if slug_len and len(slug) + end_len > slug_len:
-                slug = slug[:slug_len - end_len]
+                slug = slug[: slug_len - end_len]
                 slug = self._slug_strip(slug)
-            slug = '%s%s' % (slug, end)
+            slug = "%s%s" % (slug, end)
             kwargs[self.attname] = slug
             next += 1
         return slug
@@ -103,11 +102,11 @@ class AutoSlugField(SlugField):
 
     def get_internal_type(self):
         return "SlugField"
-    
+
     def deconstruct(self):
         name, path, args, kwargs = super(AutoSlugField, self).deconstruct()
-        kwargs['populate_from'] = self._populate_from
-        kwargs['overwrite'] = self.overwrite
-        kwargs['separator'] = self.separator
-        kwargs['allow_duplicates'] = self.allow_duplicates
+        kwargs["populate_from"] = self._populate_from
+        kwargs["overwrite"] = self.overwrite
+        kwargs["separator"] = self.separator
+        kwargs["allow_duplicates"] = self.allow_duplicates
         return name, path, args, kwargs

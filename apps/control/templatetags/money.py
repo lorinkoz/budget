@@ -9,8 +9,8 @@ register = template.Library()
 
 
 @register.filter(needs_autoescape=True)
-def money(value, extra='', autoescape=None):
+def money(value, extra="", autoescape=None):
     negative = value < 0
     dec = floatformat(abs(value), 2)
-    format = '<span class=\'text-danger\'><b>(%s)</b></span>' if negative else '%s'
+    format = "<span class='text-danger'><b>(%s)</b></span>" if negative else "%s"
     return mark_safe(format % dec)

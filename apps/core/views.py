@@ -27,8 +27,8 @@ class SorterView(RedirectView):
 
 
 class BackendDashboard(StaffRequiredMixin, SetHeadlineMixin, TemplateView):
-    headline = 'Panel de control'
-    template_name = 'core/dashboard_backend.html'
+    headline = "Panel de control"
+    template_name = "core/dashboard_backend.html"
 
     def get_context_data(self, **kwargs):
         context = super(BackendDashboard, self).get_context_data(**kwargs)
@@ -39,20 +39,20 @@ class BackendDashboard(StaffRequiredMixin, SetHeadlineMixin, TemplateView):
         area_data.pop()
         no_plan_areas = len(filter(lambda x: x.plan == 0 and x.book > 0, area_data))
         # End: no plan areas
-        overdrawns = len(assess_overdrawns(this_year, this_month, False))-1
+        overdrawns = len(assess_overdrawns(this_year, this_month, False)) - 1
         stats = {
-            'pending_records': Record.objects.filter(status=None).count(),
-            'no_plan_areas': no_plan_areas,
-            'overdrawns': overdrawns,
+            "pending_records": Record.objects.filter(status=None).count(),
+            "no_plan_areas": no_plan_areas,
+            "overdrawns": overdrawns,
         }
-        context['stats'] = stats
-        context['year'] = this_year
+        context["stats"] = stats
+        context["year"] = this_year
         return context
 
 
 class FrontendDashboard(ConsultorRequiredMixin, SetHeadlineMixin, TemplateView):
-    headline = 'Resumen'
-    template_name = 'core/dashboard_frontend.html'
+    headline = "Resumen"
+    template_name = "core/dashboard_frontend.html"
 
     def get_context_data(self, **kwargs):
         context = super(FrontendDashboard, self).get_context_data(**kwargs)
